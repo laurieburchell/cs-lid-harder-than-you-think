@@ -34,7 +34,7 @@ if ! [ -f ../test-data/flores200/flores200.devtest.fasttext ]; then
 	echo "changing flores200 devtest to fastText format"
 	for file in *; do label=${file%.devtest}; \
 		cat $file | awk -v label="$label" -F"\t" '{print "__label__"label" "$1}'; done \
-		| grep -E -v "__label__(arb_Latn|aka_Latn|min_Arab)" > ../../flores200.devtest.fasttext
+		| grep -E -v "__label__(arb_Latn|aka_Latn|min_Arab)" > $HOME_DIR/../test-data/flores200/flores200.devtest.fasttext
 	rm -rf ../../flores200_dataset
 	cd $HOME_DIR
 else
