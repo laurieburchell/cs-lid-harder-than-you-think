@@ -2,11 +2,10 @@
 set -eo pipefail
 
 # author: laurie
-# downloads training and test data
+# downloads training and test data and reformats labels
 
 HOME_DIR=`pwd`
 echo "data download script running in ${HOME_DIR}"
-
 mkdir -p ../train-data
 mkdir -p ../test-data
 
@@ -23,7 +22,7 @@ else
 fi
 
 # flores-200 
-if ! [ -f ../test-data/flores200/flores200.devtest.fasttext ]; then
+if ! [ -f ../test-data/flores200/flores200.devtest.tsv ]; then
 	echo "downloading flores200 test data"
 	mkdir -p ../test-data/flores200
 	cd ../test-data/flores200
@@ -31,17 +30,15 @@ if ! [ -f ../test-data/flores200/flores200.devtest.fasttext ]; then
 	tar -xvf flores200_dataset.tar.gz 
 	# reformat flores200 into single test file, then remove arb_Latn, aka_Latn, min_Arab
 	cd flores200_dataset/devtest
-	echo "changing flores200 devtest to fastText format"
+	echo "reformatting flores-200"
 	for file in *; do label=${file%.devtest}; \
-		cat $file | awk -v label="$label" -F"\t" '{print "__label__"label" "$1}'; done \
-		| grep -E -v "__label__(arb_Latn|aka_Latn|min_Arab)" > $HOME_DIR/../test-data/flores200/flores200.devtest.fasttext
+		cat $file | awk -v label="$label" -F"\t" '{print $1"\t"label}'; done \
+		| grep -E -v "__label__(arb_Latn|aka_Latn|min_Arab)" > $HOME_DIR/../test-data/flores200/flores200.devtest.tsv
 	rm -rf ../../flores200_dataset
 	cd $HOME_DIR
 else
-	echo "found flores200.devtest.fasttext, skipping FLORES-200 download"
+	echo "found flores200.devtest.tsv, skipping FLORES-200 download"
 fi
-
-# code-switching test sets format: sent \t label1 \t label2
 
 # BaSCo corpus - from https://github.com/Vicomtech/BaSCo-Corpus
 if ! [ -f ../test-data/basco/basco_data.tsv ]; then
@@ -56,4 +53,18 @@ else
 	echo "found basco_data.tsv, skipping BaSCo download"
 fi
 
+# LinCE data - from https://huggingface.co/datasets/lince
+if ! [[ -f ../test-data/lince/lince_spaeng_validation.tsv && -f ../test-data/lince/lince_msaea_validation.tsv ]]; then
+	echo "downloading and reformatting LinCE corpus"
+	mkdir -p ../test-data/lince
+	cd ../test-data/lince
+	# can't currently access with datsets library so I have to deal with the parquet files directly fml
+	wget https://huggingface.co/datasets/lince/resolve/refs%2Fconvert%2Fparquet/lid_spaeng/validation/0000.parquet?download=true -O lince_spaeng_validation.parquet
+	wget https://huggingface.co/datasets/lince/resolve/refs%2Fconvert%2Fparquet/lid_msaea/validation/0000.parquet?download=true -O lince_msaea_validation.parquet
+	python $HOME_DIR/tools/download-and-reformat-lince.py lince_spaeng_validation.parquet lince_msaea_validation.parquet \
+		lince_spaeng_validation.tsv lince_msaea_validation.tsv
+	cd $HOME_DIR
+else
+	echo "found lince_spaeng_validation.tsv and lince_msaea_validation.tsv, skipping LinCE download"
+fi
 

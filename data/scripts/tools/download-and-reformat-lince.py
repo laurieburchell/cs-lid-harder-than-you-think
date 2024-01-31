@@ -14,7 +14,6 @@ args = parser.parse_args()
 # currently I can't access the LinCE data with the datasets library so we're dealing with the parquet files
 def reformat_lince_parquet(in_file, lang1, lang2):
     """Munge lince lid parquet file and return sents and gold sent-level label(s)"""
-
     md = MosesDetokenizer()
     df = pd.read_parquet(in_file, engine='pyarrow', columns=['words', 'lid'])
     df['sent'] = df['words'].apply(lambda x: md.detokenize(x))
@@ -45,6 +44,5 @@ def write_out_cs_tsv(df, out_file):
 
 spaeng_df = reformat_lince_parquet(args.spaeng_in_file, 'eng_Latn', 'spa_Latn')
 msaea_df = reformat_lince_parquet(args.msaea_in_file, 'arb_Arab', 'arz_Arab')
-
 write_out_cs_tsv(spaeng_df, args.spaeng_out_file)
 write_out_cs_tsv(msaea_df, args.msaea_out_file)
