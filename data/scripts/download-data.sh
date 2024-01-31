@@ -61,10 +61,38 @@ if ! [[ -f ../test-data/lince/lince_spaeng_validation.tsv && -f ../test-data/lin
 	# can't currently access with datsets library so I have to deal with the parquet files directly fml
 	wget https://huggingface.co/datasets/lince/resolve/refs%2Fconvert%2Fparquet/lid_spaeng/validation/0000.parquet?download=true -O lince_spaeng_validation.parquet
 	wget https://huggingface.co/datasets/lince/resolve/refs%2Fconvert%2Fparquet/lid_msaea/validation/0000.parquet?download=true -O lince_msaea_validation.parquet
-	python $HOME_DIR/tools/download-and-reformat-lince.py lince_spaeng_validation.parquet lince_msaea_validation.parquet \
+	python $HOME_DIR/tools/reformat-lince.py lince_spaeng_validation.parquet lince_msaea_validation.parquet \
 		lince_spaeng_validation.tsv lince_msaea_validation.tsv
 	cd $HOME_DIR
 else
 	echo "found lince_spaeng_validation.tsv and lince_msaea_validation.tsv, skipping LinCE download"
 fi
+
+# ASCEND data - from https://huggingface.co/datasets/CAiRE/ASCEND
+if ! [ -f ../test-data/ascend/ascend_train.tsv ]; then
+	echo "downloading and reformatting ASCEND corpus"
+	mkdir -p ../test-data/ascend
+	cd ../test-data/ascend
+	python $HOME_DIR/tools/download-and-reformat-ascend.py ascend_train.tsv
+	cd $HOME_DIR
+else
+	echo "found ascend_train.tsv, skipping ASCEND download"
+fi
+
+# Turkish-English - from http://tools.nlp.itu.edu.tr/Datasets
+if [ -f ../test-data/itu-tureng/turkish-english.tsv ]; then
+	mkdir -p ../test-data/itu-tureng
+	cd ../test-data/itu-tureng
+	if ! [ -f turkish-english.raw ]; then
+		echo "please obtain the turkish-english data and save it as test-data/itu-tureng/turkish-english.raw"
+		exit 1
+	fi
+	echo "found turkish-english.raw. reformatting turkish data"
+	python $HOME_DIR/tools/reformat-itu-tureng.py turkish-english.raw turkish-english.tsv
+	cd $HOME_DIR
+else
+	echo "found turkish-english.tsv, ITU dataset preprocessing done"
+fi
+
+# Indonesian-English - from https://aclanthology.org/D19-5554/
 
