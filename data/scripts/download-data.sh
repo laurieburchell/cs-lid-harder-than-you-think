@@ -80,19 +80,32 @@ else
 fi
 
 # Turkish-English - from http://tools.nlp.itu.edu.tr/Datasets
-if [ -f ../test-data/itu-tureng/turkish-english.tsv ]; then
+if ! [ -f ../test-data/itu-tureng/turkish-english.tsv ]; then
 	mkdir -p ../test-data/itu-tureng
 	cd ../test-data/itu-tureng
 	if ! [ -f turkish-english.raw ]; then
 		echo "please obtain the turkish-english data and save it as test-data/itu-tureng/turkish-english.raw"
 		exit 1
 	fi
-	echo "found turkish-english.raw. reformatting turkish data"
+	echo "found turkish-english.raw. reformatting turkish-english data"
 	python $HOME_DIR/tools/reformat-itu-tureng.py turkish-english.raw turkish-english.tsv
 	cd $HOME_DIR
 else
-	echo "found turkish-english.tsv, ITU dataset preprocessing done"
+	echo "found turkish-english.tsv, ITU dataset reformatting done"
 fi
 
 # Indonesian-English - from https://aclanthology.org/D19-5554/
+if ! [ -f ../test-data/ind-eng/ind-eng.tsv ]; then
+	mkdir -p ../test-data/ind-eng
+	cd ../test-data/ind-eng
+	if ! [ -f 825_Indonesian_English_CodeMixed.csv ]; then
+		echo "please obtain the indonesian-english data and save it as test-data/ind-eng/825_Indonesian_English_CodeMixed.csv"
+		exit 1
+	fi
+	echo "found 825_Indonesian_English_CodeMixed.csv. reformatting indonesian-english data"
+	python $HOME_DIR/tools/reformat-indeng.py 825_Indonesian_English_CodeMixed.csv ind-eng.tsv
+	cd $HOME_DIR
+else
+	echo "found ind-eng.tsv, ind-eng dataset reformatting done"
+fi
 
