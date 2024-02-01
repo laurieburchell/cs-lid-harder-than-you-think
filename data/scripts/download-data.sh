@@ -108,4 +108,3 @@ if ! [ -f ../test-data/ind-eng/ind-eng.tsv ]; then
 else
 	echo "found ind-eng.tsv, ind-eng dataset reformatting done"
 fi
-
