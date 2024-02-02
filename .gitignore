@@ -2,6 +2,9 @@
 test-data/
 train-data/
 
+# large binary models
+*.bin
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
