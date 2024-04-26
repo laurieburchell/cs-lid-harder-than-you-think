@@ -3,6 +3,7 @@ set -eo pipefail
 
 # author: laurie
 # downloads models
+
 HOME_DIR=`pwd`
 
 # openlid - from https://github.com/laurieburchell/open-lid-dataset
