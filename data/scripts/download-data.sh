@@ -13,7 +13,12 @@ mkdir -p ../test-data
 if ! [ -f ../train-data/lid201-data.fasttext.tsv ]; then
 	echo "downloading OpenLID training data"
 	cd ../train-data
-	wget https://data.statmt.org/lid/lid201-data.tsv.gz
+	if ! [ -f  lid201-data.tsv.gz ]; then 
+		echo "downloading OpenLID training data"
+		wget https://data.statmt.org/lid/lid201-data.tsv.gz
+	else
+		echo "found lid201-data.tsv.gz, skipping OpenLID download"
+	fi
 	echo "decompressing data and changing to fastText format"
 	pigz -dc lid201-data.tsv.gz | awk -F"\t" '{print"__label__"$2" "$1}' > lid201-data.fasttext.tsv
 	cd $HOME_DIR

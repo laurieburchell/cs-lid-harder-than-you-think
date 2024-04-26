@@ -35,4 +35,5 @@ for entry in raw:
 
 with open(args.out_file, 'w') as f:
     for s, t in zip(sents, tags):
-        f.write(f"{s}\t{'\t'.join(t)}\n")
+        joined_tags = '\t'.join(t)
+        f.write(f"{s}\t{joined_tags}\n")
