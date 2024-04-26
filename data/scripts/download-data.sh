@@ -3,6 +3,7 @@ set -eo pipefail
 
 # author: laurie
 # downloads training and test data and reformats labels
+# see the github issues for an alternative way to access some of the data: https://github.com/laurieburchell/cs-lid-harder-than-you-think/issues/1
 
 HOME_DIR=`pwd`
 echo "data download script running in ${HOME_DIR}"
