@@ -23,4 +23,4 @@ else
     echo "found multilid-model.pt, skipping MultiLID model download"
 fi
 
-echo "we use pyfranc to access the franc-all model"
+echo "Use pyfranc to access the franc-all model"
