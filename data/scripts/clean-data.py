@@ -7,7 +7,7 @@ import argparse
 import sys
 import unicodedata
 from sacremoses import MosesPunctNormalizer
-
+from tools.defines import Patterns
 from tools.remove_non_printing_char import get_replacer as non_printing_char_replacer
 from tools.demojizier import Demojizer
 
@@ -24,10 +24,13 @@ class SentenceClean:
         clean = self.demojiser(clean, "")
 
         # remove twitter effects
+        clean = Patterns.URL_PATTERN.sub('', clean)
+        clean = Patterns.HASHTAG_PATTERN.sub('', clean)
+        clean = Patterns.MENTION_PATTERN.sub('', clean)
+        clean = Patterns.RESERVED_WORDS_PATTERN.sub('', clean)
+        clean = Patterns.NUMBERS_PATTERN.sub('', clean)
 
         return clean
-
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("in_file", help="test file in tab-separated format 'sent label1 label2")
@@ -39,8 +42,7 @@ with open(args.in_file) as f:
     for line in f.readlines():
         raw_sent = line.split('\t')[0].strip()
         clean_sent = sent_cleaner(raw_sent)
-        print(clean_sent)
-        break
+        sys.stdout.write(f"{clean_sent}\n")
 
 
 
