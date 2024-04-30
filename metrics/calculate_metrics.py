@@ -54,9 +54,9 @@ def main():
     with open(args.pred_file, 'r') as f:
         pred_labels = [x.strip().replace('__label__', '').split() for x in f.readlines()]
 
-    # if not franc, can fit binariser based on flores_201_langs. else need to fit on transformed franc labels
     mlb = MultiLabelBinarizer()
 
+    # if franc, need to convert tags to allow comparison
     if args.franc:
         # first standardise flores labels as alpha3 codes
         flores_201_langs_std_set = set([langcodes.Language.get(x).to_alpha3() for x in flores_201_langs])
@@ -83,8 +83,9 @@ def main():
         bin_gold_labels = mlb.transform(converted_gold_labels)
         bin_pred_labels = mlb.transform(converted_preds)
 
+        # if not franc, can fit binariser based on flores_201_langs
     else:
-        mlb.fit([flores_201_langs])  # fit binariser based on flores_201_langs
+        mlb.fit([flores_201_langs])
         # binarise gold and pred labels
         bin_gold_labels = mlb.transform(gold_labels)
         bin_pred_labels = mlb.transform(pred_labels)
