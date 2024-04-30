@@ -14,6 +14,7 @@ parser.add_argument("out_file", help="where to write predictions")
 args = parser.parse_args()
 
 # read in test file
+print('Reading test data from', args.test_file)
 with open(args.test_file, 'r') as f:
     test_data = [x.strip() for x in f.readlines()]
 
@@ -26,4 +27,4 @@ with open(args.out_file, 'w') as f:
         preds = [x.strip().replace('__label__', '') for x in model.predict(sent, k=2, threshold=0.3)[0]]
         f.write('\t'.join(preds) + '\n')
 
-
+print('Predictions written to', args.out_file)
