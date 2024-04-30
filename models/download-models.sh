@@ -8,13 +8,13 @@ HOME_DIR=`pwd`
 
 # openlid - from https://github.com/laurieburchell/open-lid-dataset
 cd openlid
-if ! [ -f lid201-model.bin.gz ]; then
+if ! [ -f lid201-model.bin ]; then
     echo "downloading OpenLID model"
     wget https://data.statmt.org/lid/lid201-model.bin.gz
+    pigz -d lid201-model.bin.gz
 else
-    echo "found lid201-model.bin.gz, skipping OpenLID model download"
+    echo "found lid201-model.bin, skipping OpenLID model download"
 fi
-pigz -d lid201-model.bin.gz
 cd $HOME_DIR
 
 # multilid - download from University of Edinburgh's server
