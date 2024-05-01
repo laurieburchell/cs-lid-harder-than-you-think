@@ -83,7 +83,7 @@ def main():
         bin_gold_labels = mlb.transform(converted_gold_labels)
         bin_pred_labels = mlb.transform(converted_preds)
 
-        # if not franc, can fit binariser based on flores_201_langs
+    # if not franc, can fit binariser based on flores_201_langs
     else:
         mlb.fit([flores_201_langs])
         # binarise gold and pred labels
