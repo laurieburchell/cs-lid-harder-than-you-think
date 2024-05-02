@@ -38,7 +38,7 @@ if ! [ -f ../test-data/flores200/flores200.devtest.tsv ]; then
 	cd flores200_dataset/devtest
 	echo "reformatting flores-200"
 	for file in *; do label=${file%.devtest}; \
-		cat $file | awk -v label="$label" -F"\t" '{print $1"\t"label}'; done \
+		cat $file | awk -v label="$label" -F"\t" '{print $1"\t"__label__}'; done \
 		| grep -E -v "__label__(arb_Latn|aka_Latn|min_Arab)" > $HOME_DIR/../test-data/flores200/flores200.devtest.tsv
 	rm -rf ../../flores200_dataset
 	cd $HOME_DIR
