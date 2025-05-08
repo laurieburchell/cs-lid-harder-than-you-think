@@ -1,6 +1,7 @@
-"""Cleans test sets in format 'sent \t labels...', outputting cleaned sentences to stdout
+"""Cleans test sets in format 'sent \t labels...', outputting cleaned sentences to a file
 
 author: laurie
+Usage : python clean-data.py <input_file> [--out_file <output_file>] [--clean_file <cleaned_sentences_file>]
 """
 
 import argparse
@@ -33,17 +34,41 @@ class SentenceClean:
         return clean
 
 parser = argparse.ArgumentParser()
-parser.add_argument("in_file", help="test file in tab-separated format 'sent label1 label2")
+parser.add_argument(
+    "in_file", 
+    type=str, 
+    help="Path to the input file in tab-separated format 'sent label1 label2'"
+)
+
+parser.add_argument(
+    "--out_file",
+    type=str,
+    default="gold_labels_ascend.txt",
+    help="Path to the output file for gold labels"
+)
+
+parser.add_argument(
+    "--clean_file",
+    type=str,
+    default="cleaned_ascend.txt",
+    help="Path to the output file for cleaned sentences"
+)
+
 args = parser.parse_args()
+
+if not args.in_file:
+    parser.error("The input file path is required. Please provide it as an argument.")
 
 sent_cleaner = SentenceClean()
 
-with open(args.in_file) as f:
+with open(args.in_file, 'r', encoding='utf-8') as f, \
+     open(args.out_file, 'w', encoding='utf-8') as gold_out, \
+     open(args.clean_file, 'w', encoding='utf-8') as clean_out:
     for line in f.readlines():
-        raw_sent = line.split('\t')[0].strip()
-        clean_sent = sent_cleaner(raw_sent)
-        sys.stdout.write(f"{clean_sent}\n")
-
-
-
-
+        parts = line.strip().split('\t')
+        if len(parts) > 1:
+            raw_sent = parts[0].strip()
+            labels = parts[1:]  # Extract labels
+            clean_sent = sent_cleaner(raw_sent)
+            clean_out.write(f"{clean_sent}\n")  # Write cleaned sentences to cleaned_sentences.txt
+            gold_out.write("\t".join(labels) + "\n")  # Write labels to gold_labels.txt
